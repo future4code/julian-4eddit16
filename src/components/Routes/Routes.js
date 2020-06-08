@@ -1,3 +1,4 @@
+import React from 'react';
 import { Switch, Route, BrowserRouter } from 'react-router-dom';
 
 import LoginPage from '../LoginPage';
@@ -12,14 +13,17 @@ const Routes = () => {
                 <Route exact path="/login">
                     <LoginPage />
                 </Route>
-                <Route exact path="signup">
+                <Route exact path="/signup">
                     <SignUpPage />
                 </Route>
-                <Route exact path="feed">
+                <Route exact path="/">
                     <FeedPage />
                 </Route>
-                <Route exact path="post">
+                <Route exact path="/post">
                     <PostPage />
+                </Route>
+                <Route path='/'>
+                    <div>404</div>
                 </Route>
             </Switch>
         </BrowserRouter>
