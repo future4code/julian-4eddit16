@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
+
+import useForm from '../Hooks/useForm';
+import useOnSession from '../Hooks/useOnSession';
 
 const MainLogin = styled.section`
     height: 100vh;
@@ -21,47 +24,55 @@ const LoginContainer = styled.div`
 `
 
 const LoginPage = () => {
+    useOnSession();
 
     const history = useHistory();
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const goToSignUpPage = () => {
+        history.push('/signup');
+    };
+
+    const { form, onChange } = useForm({ email: '', password: '' });
+
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
+
+        onChange(name, value);
+    };
 
     const login = async () => {
-        const body = {
-            email: email,
-            password: password
-        };
-
         try {
-            const response = await axios.post('https://us-central1-labenu-apis.cloudfunctions.net/labEddit/login', body);
-            
+            const response = await axios.post('https://us-central1-labenu-apis.cloudfunctions.net/labEddit/login', form);
+
             localStorage.setItem('token', response.data.token);
             history.push('/');
         } catch (e) {
             alert('login e/ou senha, inválidos');
         };
     };
- 
+
     return (
         <MainLogin>
             <LoginContainer>
                 Login
                 <input
-                    value={email}
+                    value={form.email}
                     type='text'
+                    name='email'
                     placeholder='E-mail'
-                    onChange={event => setEmail(event.target.value)}
+                    onChange={handleInputChange}
                     required
                 />
                 <input
-                    value={password}
+                    value={form.password}
                     type='password'
+                    name='password'
                     placeholder='Senha'
-                    onChange={event => setPassword(event.target.value)}
+                    onChange={handleInputChange}
                     required
                 />
                 <button onClick={login}>logar</button>
+                <button onClick={goToSignUpPage}>cadastrar</button>
             </LoginContainer>
         </MainLogin>
     );

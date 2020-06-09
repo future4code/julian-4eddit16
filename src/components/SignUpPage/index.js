@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
-
+import useForm from '../Hooks/useForm'
+import useOnSession from '../Hooks/useOnSession';
 
 const MainSignUp = styled.section`
     height: 100vh;
@@ -22,27 +23,26 @@ const SignUpContainer = styled.div`
 `
 
 const SignUpPage = () => {
+    useOnSession();
 
     const history = useHistory();
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [username, setUsername] = useState('');
+    const { form, onChange } = useForm({ email: '', password: '', username: '' });
+
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
+
+        onChange(name, value);
+    };
 
     const signUp = async () => {
-        const body = {
-            email: email,
-            password: password,
-            username: username
-        };
-
         try {
-            const response = await axios.post('https://us-central1-labenu-apis.cloudfunctions.net/labEddit/signup', body);
+            const response = await axios.post('https://us-central1-labenu-apis.cloudfunctions.net/labEddit/signup', form);
             
             localStorage.setItem('token', response.data.token);
             history.push('/');
         } catch (e) {
-            alert('login e/ou senha, inválidos');
+            alert('Não foi possivel cadastrar');
         };
     };
 
@@ -51,24 +51,27 @@ const SignUpPage = () => {
             <SignUpContainer>
                 SignUp
                 <input
-                    value={username}
+                    value={form.username}
                     type='text'
+                    name='username'
                     placeholder='Nome de usuário'
-                    onChange={event => setUsername(event.target.value)}
+                    onChange={handleInputChange}
                     required
                 />
                 <input
-                    value={email}
+                    value={form.email}
                     type='text'
+                    name='email'
                     placeholder='E-mail'
-                    onChange={event => setEmail(event.target.value)}
+                    onChange={handleInputChange}
                     required
                 />
                 <input
-                    value={password}
+                    value={form.password}
                     type='password'
+                    name='password'
                     placeholder='Senha'
-                    onChange={event => setPassword(event.target.value)}
+                    onChange={handleInputChange}
                     required
                 />
                 <button onClick={signUp}>Sign Up</button>
