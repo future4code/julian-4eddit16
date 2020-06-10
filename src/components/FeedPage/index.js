@@ -5,10 +5,14 @@ import axios from 'axios';
 import styled from 'styled-components';
 import useForm from '../Hooks/useForm';
 
+import NavigationBar from '../NavigationBar/NavigationBar'
+
 const Wrapper = styled.section`
 
     display: grid;
-    grid-template-areas: 'a b c';
+    grid-template-areas: 'navi navi navi' 
+                         'a b c';
+    grid-template-areas: 8% 92%;
     grid-template-columns: 1fr 2fr 1fr;
     background-color: #d9d9d9;
 
@@ -33,6 +37,21 @@ const Post = styled.div`
     background-color: whitesmoke;
 `
 
+const InputsForm = styled.div`
+    text-align: center;
+`
+
+const Input = styled.input`
+    height: 30px;
+    width: 80%;
+`
+
+const PrimaryButton = styled.button`
+    height: 10%;
+    width: 45%;
+    font-size: large;
+`
+
 const FeedPage = () => {
     useProtectedPage();
 
@@ -49,11 +68,6 @@ const FeedPage = () => {
         const { name, value } = event.target;
 
         onChange(name, value);
-    };
-    
-    const handleTologout = () => {
-        window.localStorage.clear();
-        history.push('/login');
     };
 
     useEffect(() => {
@@ -84,14 +98,32 @@ const FeedPage = () => {
         }
     };
 
+    const vote = async (id, direction) => {
+        const token = window.localStorage.getItem('token');
+        try {
+            const response = await axios.put(`https://us-central1-labenu-apis.cloudfunctions.net/labEddit/posts/${id}/vote`, {
+                direction: direction
+            }, {
+                headers: {
+                    Authorization: token,
+                    postId: id
+                }
+            });
+            console.log(response.data);
+        } catch (e) {
+            alert('não foi votar');
+        }
+
+
+    };
+
     return (
         <Wrapper>
+            <NavigationBar />
             <A />
             <B>
-                Feed
-                <button onClick={handleTologout}>logoff</button>
-                <div>
-                    <input
+                <InputsForm>
+                    <Input
                         value={form.title}
                         type='text'
                         name='title'
@@ -99,7 +131,7 @@ const FeedPage = () => {
                         onChange={handleInputChange}
                         required
                     />
-                    <input
+                    <Input
                         value={form.text}
                         type='text'
                         name='text'
@@ -107,8 +139,8 @@ const FeedPage = () => {
                         onChange={handleInputChange}
                         required
                     />
-                    <button onClick={createPost}>Ciar</button>
-                </div>
+                    <PrimaryButton onClick={createPost}>Ciar</PrimaryButton>
+                </InputsForm>
                 {post && post.map(post => {
                     return (
                         <Post key={post.id}>
@@ -116,10 +148,10 @@ const FeedPage = () => {
                                 <h6>4/{post.username}</h6>
                                 <h4>{post.title}</h4>
                                 <p>{post.text}</p>
-                                <p>{post.voteCount} {post.userVoteDirection} | {post.commentsCount}</p>
+                                <p>{post.voteCount} {post.userVoteDirection} | 💬 {post.commentsCount}</p>
                             </div>
-                            <button>^</button>
-                            <button>v</button>
+                            <button onClick={() => vote(post.id, +1)}>🔺</button>
+                            <button onClick={() => vote(post.id, -1)}>🔻</button>
                         </Post>
                     )
                 })}
