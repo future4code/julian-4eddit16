@@ -1,26 +1,10 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
-import styled from 'styled-components';
 import useForm from '../Hooks/useForm'
 import useOnSession from '../Hooks/useOnSession';
 
-const MainSignUp = styled.section`
-    height: 100vh;
-    width: 100vw;
-    display: flex;
-    background-color: #d9d9d9;
-    justify-content: center;
-    align-items: center;
-`
-
-const SignUpContainer = styled.div`
-    height:90%;
-    width: 65%;
-    border-radius: 5px;
-    box-shadow: 5px 10px 10px #888888;
-    background-color: whitesmoke;
-`
+import { MainPage, MainContainer, InputsForm, Image, Input, PrimaryButton} from '../../styles/LoginSignUp'
 
 const SignUpPage = () => {
     useOnSession();
@@ -47,36 +31,39 @@ const SignUpPage = () => {
     };
 
     return (
-        <MainSignUp>
-            <SignUpContainer>
-                SignUp
-                <input
-                    value={form.username}
-                    type='text'
-                    name='username'
-                    placeholder='Nome de usuário'
-                    onChange={handleInputChange}
-                    required
-                />
-                <input
-                    value={form.email}
-                    type='text'
-                    name='email'
-                    placeholder='E-mail'
-                    onChange={handleInputChange}
-                    required
-                />
-                <input
-                    value={form.password}
-                    type='password'
-                    name='password'
-                    placeholder='Senha'
-                    onChange={handleInputChange}
-                    required
-                />
-                <button onClick={signUp}>Sign Up</button>
-            </SignUpContainer>
-        </MainSignUp>
+        <MainPage>
+            <MainContainer>
+                <InputsForm>
+                    <Image src='https://avatars.slack-edge.com/2019-10-08/787705854592_d4dcaa8333ccc0c25ff0_512.png'/>
+                    <h3>Sign up</h3>
+                    <Input
+                        value={form.username}
+                        type='text'
+                        name='username'
+                        placeholder='Nome de usuário'
+                        onChange={handleInputChange}
+                        required
+                    />
+                    <Input
+                        value={form.email}
+                        type='text'
+                        name='email'
+                        placeholder='E-mail'
+                        onChange={handleInputChange}
+                        required
+                    />
+                    <Input
+                        value={form.password}
+                        type='password'
+                        name='password'
+                        placeholder='Senha'
+                        onChange={handleInputChange}
+                        required
+                    />
+                    <PrimaryButton onClick={signUp}>Sign Up</PrimaryButton>
+                </InputsForm>
+            </MainContainer>
+        </MainPage>
     );
 };
 
