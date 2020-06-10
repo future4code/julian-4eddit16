@@ -1,27 +1,10 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
-import styled from 'styled-components';
 
 import useForm from '../Hooks/useForm';
 import useOnSession from '../Hooks/useOnSession';
-
-const MainLogin = styled.section`
-    height: 100vh;
-    width: 100vw;
-    display: flex;
-    background-color: #d9d9d9;
-    justify-content: center;
-    align-items: center;
-`
-
-const LoginContainer = styled.div`
-    height:90%;
-    width: 65%;
-    border-radius: 5px;
-    box-shadow: 5px 10px 10px #888888;
-    background-color: whitesmoke;
-`
+import { MainPage, MainContainer, InputsForm, Image, Input, PrimaryButton} from '../../styles/LoginSignUp'
 
 const LoginPage = () => {
     useOnSession();
@@ -52,29 +35,32 @@ const LoginPage = () => {
     };
 
     return (
-        <MainLogin>
-            <LoginContainer>
-                Login
-                <input
-                    value={form.email}
-                    type='text'
-                    name='email'
-                    placeholder='E-mail'
-                    onChange={handleInputChange}
-                    required
-                />
-                <input
-                    value={form.password}
-                    type='password'
-                    name='password'
-                    placeholder='Senha'
-                    onChange={handleInputChange}
-                    required
-                />
-                <button onClick={login}>logar</button>
-                <button onClick={goToSignUpPage}>cadastrar</button>
-            </LoginContainer>
-        </MainLogin>
+        <MainPage>
+            <MainContainer>
+                <InputsForm>
+                    <Image src='https://avatars.slack-edge.com/2019-10-08/787705854592_d4dcaa8333ccc0c25ff0_512.png'/>
+                    <h3>Sign in</h3>
+                    <Input
+                        value={form.email}
+                        type='text'
+                        name='email'
+                        placeholder='E-mail'
+                        onChange={handleInputChange}
+                        required
+                    />
+                    <Input
+                        value={form.password}
+                        type='password'
+                        name='password'
+                        placeholder='Senha'
+                        onChange={handleInputChange}
+                        required
+                    />
+                    <PrimaryButton onClick={login}>SIGN IN</PrimaryButton>
+                    <p>New to 4eddit?</p> <button onClick={goToSignUpPage}>SIGN UP</button>
+                </InputsForm>
+            </MainContainer>
+        </MainPage>
     );
 };
 
