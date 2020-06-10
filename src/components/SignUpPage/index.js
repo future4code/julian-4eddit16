@@ -1,7 +1,7 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
-import useForm from '../Hooks/useForm'
+import useForm from '../Hooks/useForm';
 import useOnSession from '../Hooks/useOnSession';
 
 import { MainPage, MainContainer, InputsForm, Image, Input, PrimaryButton} from '../../styles/LoginSignUp'
