@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import useForm from '../Hooks/useForm';
@@ -6,12 +6,15 @@ import useOnSession from '../Hooks/useOnSession';
 
 import { MainPage, MainContainer, InputsForm, Image, Input, PrimaryButton} from '../../styles/LoginSignUp'
 
+import ErrorBar from '../ErrorBar/ErrorBar'
+
 const SignUpPage = () => {
     useOnSession();
 
     const history = useHistory();
 
     const { form, onChange } = useForm({ email: '', password: '', username: '' });
+    const [errorMsg, setErrorMsg] = useState(false);
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -26,12 +29,23 @@ const SignUpPage = () => {
             localStorage.setItem('token', response.data.token);
             history.push('/');
         } catch (e) {
-            alert('Não foi possivel cadastrar');
+            console.error(e);
+            setErrorMsg(!errorMsg);
         };
+    };
+
+    const toCloseErrorMsg = () => {
+        setErrorMsg(!errorMsg);
     };
 
     return (
         <MainPage>
+            { errorMsg ? (
+                <ErrorBar 
+                    msgError={'Não foi possível cadastrar'}
+                    toClose={toCloseErrorMsg}
+                /> 
+            ): '' }
             <MainContainer>
                 <InputsForm>
                     <Image src='https://avatars.slack-edge.com/2019-10-08/787705854592_d4dcaa8333ccc0c25ff0_512.png'/>

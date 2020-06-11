@@ -18,7 +18,7 @@ const NavigationBarWrapper = styled.nav`
 export const Image = styled.img`
     max-width: 50px;
     border: 3px orange solid;
-    border-radius: 30px;
+    border-radius: 50px;
     border-top-right-radius: 0;
     cursor: pointer;
 `
@@ -49,6 +49,8 @@ const NavigationBar = () => {
         history.push('/login');
     };
 
+    const username = window.localStorage.getItem('username');
+
     return (
         <NavigationBarWrapper>
             <Div >
@@ -56,7 +58,7 @@ const NavigationBar = () => {
                     src='https://avatars.slack-edge.com/2019-10-08/787705854592_d4dcaa8333ccc0c25ff0_512.png'
                     onClick={goToFeed}
                 />
-                <Username>4/username</Username>
+                <Username>4/{username}</Username>
             </Div>
             <Logout>
                 <FontAwesomeIcon 

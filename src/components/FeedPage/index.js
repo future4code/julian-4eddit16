@@ -68,52 +68,79 @@ const C = styled.div`
 
 const Post = styled.div`
     max-height: 250px;
+    min-height: 200px;
     display: grid;
     grid-template-areas: 'side user'
                          'side title' 
                          'side container'
                          'side comments';
     grid-template-rows: 20% 20% 40% 20%;
-    grid-template-columns: 1fr 9fr;
+    grid-template-columns: 5% 95%;
 
 
-    border: 1px solid black;
+    border: 1px solid gray;
     border-radius: 5px;
     margin: 2.5%;
     background-color: whitesmoke;
 `
 
 const VoteBar = styled.div`
-
     display: flex;
     grid-area: side;
     padding-top: 20%;
     /**border: 1px solid red;*/
     align-items: center;
     flex-direction: column;
+    background-color: #d9d9d9;
 `
+const UpVote = styled(FontAwesomeIcon)`
+    cursor: pointer;
+` 
+
+const DownVote = styled(FontAwesomeIcon)`
+    cursor: pointer;
+` 
+
+
 
 const User = styled.div`
+    display: flex;
     grid-area: user;
     /**border: 1px solid yellow;*/
+    padding-left: 2%;
+    justify-content: right;
+    align-items: center;
+    background-color: #fcfcfc;
 `
 
 const Title = styled.div`
     grid-area: title;
     /**border: 1px solid green;*/
+    padding-left: 8%;
+    padding-right: 8%;
 `
 
 const Content = styled.div`
     grid-area: container;
     /**border: 1px solid blue;*/
+    padding-left: 4%;
+    padding-right: 4%;
+    cursor: pointer;
+
 `
 
 const Comments = styled.div`
     grid-area: comments;
     /**border: 1px solid purple;*/
+    text-align: right;
+    padding-right: 4%;
+    background-color: #fcfcfc;
+
 `
 
 const InputsForm = styled.div`
+    
+    display: flex;
     text-align: center;
 `
 
@@ -123,9 +150,23 @@ const Input = styled.input`
 `
 
 const PrimaryButton = styled.button`
-    height: 10%;
+    
     width: 45%;
     font-size: large;
+    color: black;
+    background-color: orange;
+`
+
+const UserProfileImage = styled.img`
+    max-width: 50px;
+    border: 3px gray solid;
+    border-radius: 50px;
+    border-top-right-radius: 0;
+`
+
+const UserNamePost = styled.h5`
+    padding-left: 2%;
+    color: gray;
 `
 
 const FeedPage = () => {
@@ -147,17 +188,22 @@ const FeedPage = () => {
     };
 
     useEffect(() => {
-        const token = window.localStorage.getItem('token');
-        axios.get('https://us-central1-labenu-apis.cloudfunctions.net/labEddit/posts', {
-            headers: {
-                Authorization: token
-            }
-        }).then(response => {
-                setPost(response.data.posts);
-        }).catch(err => {
-                console.log(err);
-        });
+        getPosts();
     }, []);
+
+    const getPosts = async () => {
+        const token = window.localStorage.getItem('token');
+        try {
+            const response = await axios.get('https://us-central1-labenu-apis.cloudfunctions.net/labEddit/posts', {
+                headers: {
+                    Authorization: token
+                }
+            });
+            setPost(response.data.posts);
+        } catch(e) {
+                console.error(e);
+        };
+    };
 
     const createPost = async () => {
         const token = window.localStorage.getItem('token');
@@ -185,12 +231,10 @@ const FeedPage = () => {
                     postId: id
                 }
             });
-            console.log(response.data);
+            getPosts();
         } catch (e) {
             alert('não foi possível votar');
         }
-
-
     };
 
     let tela = post.lenght === 0?(
@@ -222,7 +266,8 @@ const FeedPage = () => {
                     return (
                         <Post key={post.id}>
                                 <User>
-                                    <h6>4/{post.username}</h6>
+                                    <UserProfileImage src={`https://picsum.photos/25/25?random=${post.id}`} />
+                                    <UserNamePost>4/{post.username}</UserNamePost>
                                 </User>
                                 <Title>
                                     <h4>{post.title}</h4>
@@ -234,18 +279,18 @@ const FeedPage = () => {
                                     <p>💬 {post.commentsCount} {post.commentsCount > 1? 'Comments' : 'Comment' }</p>
                                 </Comments>
                                 <VoteBar>
-                                    <FontAwesomeIcon
+                                    <UpVote
                                         icon={faArrowAltCircleUp}
                                         size='lg'
-                                        color='gray'
+                                        color={post.userVoteDirection === 1? 'orange' : 'gray'}
                                         onClick={() => vote(post.id, +1)}
                                     />
-                                    {/**<p>{post.voteCount}</p>*/}
-                                    <p>{post.userVoteDirection}</p>
-                                    <FontAwesomeIcon
+                                    {/**<p>{post.userVoteDirection}</p>*/}
+                                    <p>{post.votesCount}</p>
+                                    <DownVote
                                         icon={faArrowAltCircleDown}
                                         size='lg'
-                                        color='gray'
+                                        color={post.userVoteDirection === -1? 'orange' : 'gray'}
                                         onClick={() => vote(post.id, -1)}
                                     />
                                 </VoteBar>

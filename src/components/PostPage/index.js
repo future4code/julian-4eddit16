@@ -17,7 +17,7 @@ const Wrapper = styled.section`
                          'a b c';
     grid-template-areas: 8% 92%;
     grid-template-columns: 1fr 2fr 1fr;
-    background-color: #d9d9d9;
+
 
 `
 
