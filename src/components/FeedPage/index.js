@@ -187,18 +187,18 @@ const FeedPage = () => {
             });
             console.log(response.data);
         } catch (e) {
-            alert('não foi votar');
+            alert('não foi possível votar');
         }
 
 
     };
 
-    return (
-        <Wrapper>
-            <NavigationBar />
-            <Blau>
+    let tela = post.lenght === 0?(
+        <img src='https://www.mobility.com.br/b2c/wp-content/themes/basetheme/dist/images/loading.gif' />
+    ) : (
+        <Blau>
             <A />
-            <B>
+        <B>
                 <InputsForm>
                     <Input
                         value={form.title}
@@ -255,6 +255,13 @@ const FeedPage = () => {
             </B>
             <C />
             </Blau>
+    );
+    return (
+        <Wrapper>
+            <NavigationBar />
+            
+                {tela}
+            
         </Wrapper>
     );
 };

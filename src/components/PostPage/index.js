@@ -5,6 +5,9 @@ import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import useForm from '../Hooks/useForm';
 import styled from 'styled-components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowAltCircleUp } from '@fortawesome/free-solid-svg-icons';
+import { faArrowAltCircleDown } from '@fortawesome/free-solid-svg-icons';
 
 import NavigationBar from '../NavigationBar/NavigationBar'
 
@@ -30,12 +33,7 @@ const C = styled.div`
     grid-area: c;
 `
 
-const Post = styled.div`
-    border: 1px solid black;
-    border-radius: 5px;
-    margin: 2.5%;
-    background-color: whitesmoke;
-`
+
 
 const InputsForm = styled.div`
     text-align: center;
@@ -50,6 +48,86 @@ const PrimaryButton = styled.button`
     height: 10%;
     width: 45%;
     font-size: large;
+`
+
+const Post = styled.div`
+    max-height: 250px;
+    display: grid;
+    grid-template-areas: 'side user'
+                         'side title' 
+                         'side container'
+                         'side comments';
+    grid-template-rows: 20% 20% 40% 20%;
+    grid-template-columns: 1fr 9fr;
+
+
+    border: 1px solid black;
+    border-radius: 5px;
+    margin: 2.5%;
+    background-color: whitesmoke;
+`
+
+const VoteBar = styled.div`
+
+    display: flex;
+    grid-area: side;
+    padding-top: 20%;
+    /**
+    border: 1px solid red;
+    */
+    
+    align-items: center;
+    flex-direction: column;
+`
+
+const User = styled.div`
+    grid-area: user;
+    /**
+    border: 1px solid yellow;
+    */
+    
+`
+
+const Title = styled.div`
+    grid-area: title;
+    /**
+    border: 1px solid green;
+    */
+    
+`
+
+const Content = styled.div`
+    grid-area: container;
+    /**
+    border: 1px solid blue;
+    */
+    
+`
+
+const Comments = styled.div`
+    grid-area: comments;
+    /**
+    border: 1px solid purple;
+    */
+    
+`
+
+const Comment = styled.div`
+    max-height: 250px;
+    display: grid;
+    grid-template-areas: 'side user' 
+                         'side container';
+    grid-template-rows: 30% 70%;
+    grid-template-columns: 1fr 9fr;
+
+
+    border: 1px solid black;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    margin: 2.5%;
+    margin-top: 0;
+    margin-bottom: .5%;
+    background-color: whitesmoke;
 `
 
 const PostPage = () => {
@@ -98,18 +176,78 @@ const PostPage = () => {
             alert('não foi possível comentar');
         }
     };
-    
-    return (
-        <Wrapper>
-            <NavigationBar />
-            <A />
+
+    const vote = async (id, direction) => {
+        const token = window.localStorage.getItem('token');
+        try {
+            const response = await axios.put(`https://us-central1-labenu-apis.cloudfunctions.net/labEddit/posts/${id}/vote`, {
+                direction: direction
+            }, {
+                headers: {
+                    Authorization: token,
+                    postId: id
+                }
+            });
+            console.log(response.data);
+        } catch (e) {
+            alert('não foi possível votar');
+        }
+    };
+
+
+    const voteComment = async (id, direction) => {
+        const token = window.localStorage.getItem('token');
+        try {
+            const response = await axios.put(`https://us-central1-labenu-apis.cloudfunctions.net/labEddit/posts/${pathParams.id}/comment/${id}/vote`, {
+                direction: direction
+            }, {
+                headers: {
+                    Authorization: token,
+                    postId: pathParams.id,
+                    commentId: id
+                }
+            });
+            console.log(response.data);
+        } catch (e) {
+            alert('não foi possível votar');
+        }
+    };
+
+    let tela = post.lenght === 0?(
+        <img src='https://www.mobility.com.br/b2c/wp-content/themes/basetheme/dist/images/loading.gif' />
+    ) : (
+
             <B>
-                <Post>
-                    <h6>4/{post.username}</h6>
-                    <h4>{post.title}</h4>
-                    <p>{post.text}</p>
-                    <p>{post.voteCount} {post.userVoteDirection} | {post.commentsCount}</p>
-                </Post>
+                <Post key={post.id}>
+                                <User>
+                                    <h6>4/{post.username}</h6>
+                                </User>
+                                <Title>
+                                    <h4>{post.title}</h4>
+                                </Title>
+                                <Content>
+                                    <p>{post.text}</p>
+                                </Content>
+                                <Comments>
+                                    <p>💬 {post.commentsCount} {post.commentsCount > 1? 'Comments' : 'Comment' }</p>
+                                </Comments>
+                                <VoteBar>
+                                    <FontAwesomeIcon
+                                        icon={faArrowAltCircleUp}
+                                        size='lg'
+                                        color='gray'
+                                        onClick={() => vote(post.id, +1)}
+                                    />
+                                    {/**<p>{post.voteCount}</p>*/}
+                                    <p>{post.userVoteDirection}</p>
+                                    <FontAwesomeIcon
+                                        icon={faArrowAltCircleDown}
+                                        size='lg'
+                                        color='gray'
+                                        onClick={() => vote(post.id, -1)}
+                                    />
+                                </VoteBar>
+                        </Post>
                 <div>
                     <input
                         value={form.text}
@@ -123,17 +261,43 @@ const PostPage = () => {
                 </div>
                 <div>
                     {comment.map(comment => (
-                        <Post key={comment.id}>
-                            <p>{comment.userVoteDirection}</p>
-                            <p>{comment.id}</p>
-                            <p>{comment.username}</p>
-                            <p>{comment.text}</p>
-                            <p>{comment.createdAt}</p>
-                            <p>{comment.votesCount}</p>
-                        </Post>
+                        <Comment key={comment.id}>
+                            <User>
+                                <p>4/{comment.username}</p>
+                            </User>
+                            
+                            <Content>
+                                <p>{comment.text}</p>
+                            </Content>
+                            {/*<p>{comment.createdAt}</p>*/}
+                            
+                            <VoteBar>
+                                <FontAwesomeIcon
+                                    icon={faArrowAltCircleUp}
+                                    size='lg'
+                                    color='gray'
+                                    onClick={() => voteComment(comment.id, +1)}
+                                />
+                                {/**<p>{comment.userVoteDirection}</p>*/}
+                                <p>{comment.votesCount}</p>
+                                <FontAwesomeIcon
+                                    icon={faArrowAltCircleDown}
+                                    size='lg'
+                                    color='gray'
+                                    onClick={() => voteComment(comment.id, -1)}
+                                />
+                                </VoteBar>
+                        </Comment>
                     ))}
                 </div>
             </B>
+    )
+    
+    return (
+        <Wrapper>
+            <NavigationBar />
+            <A />
+                {tela}
             <C />
 
         </Wrapper>
