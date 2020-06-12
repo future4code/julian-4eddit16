@@ -7,7 +7,11 @@ const useForm = (initialValues) => {
         setForm({ ...form, [name]: value });
     };
 
-    return { form, onChange };
+    const clearForm = () => {
+        setForm(initialValues);
+    };
+
+    return { form, onChange, clearForm };
 };
 
 export default useForm;

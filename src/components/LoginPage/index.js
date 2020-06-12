@@ -1,16 +1,26 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 
-import useForm from '../Hooks/useForm';
 import useOnSession from '../Hooks/useOnSession';
-import { MainPage, MainContainer, InputsForm, Image, Input, PrimaryButton} from '../../styles/LoginSignUp';
+import useForm from '../Hooks/useForm';
+import useApi from '../Hooks/useApi';
 
 import ErrorBar from '../ErrorBar/ErrorBar'
 
+import { 
+    MainPage, 
+    MainContainer, 
+    InputsForm, 
+    Image, 
+    Input, 
+    PrimaryButton} from '../../styles/LoginSignUp';
+
+
 const LoginPage = () => {
     useOnSession();
-
+    
+    const api = useApi();
+    
     const history = useHistory();
 
     const goToSignUpPage = () => {
@@ -25,7 +35,7 @@ const LoginPage = () => {
 
         onChange(name, value);
     };
-
+/*
     const login = async () => {
         try {
             const response = await axios.post('https://us-central1-labenu-apis.cloudfunctions.net/labEddit/login', form);
@@ -37,6 +47,19 @@ const LoginPage = () => {
             console.error(e);
             setErrorMsg(!errorMsg);
         };
+    };
+*/
+    const login = async () => {
+        try {
+            let data
+            const response = await api.post('login', form, data)
+            localStorage.setItem('token', response.data.token);
+            localStorage.setItem('username', response.data.user.username);
+            history.push('/');
+        } catch (e) {
+            console.error(e);
+            setErrorMsg(!errorMsg);
+        }
     };
 
     const toCloseErrorMsg = () => {

@@ -1,5 +1,4 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
@@ -28,8 +27,6 @@ const Msg = styled.div`
 `
 
 const ErrorBar = (props) => {
-    const history = useHistory();
-
     return (
         <ErrorBarWrapper>
             <Msg>
